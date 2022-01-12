@@ -11,14 +11,10 @@
  */
 import "./i18n"
 import "./utils/ignore-warnings"
-import React, { useState, useEffect } from "react"
-import { SafeAreaProvider, initialWindowMetrics } from "react-native-safe-area-context"
-import { initFonts } from "./theme/fonts" // expo
-import * as storage from "./utils/storage"
-import { AppNavigator, useNavigationPersistence } from "./navigators"
-import { RootStore, RootStoreProvider, setupRootStore } from "./models"
-import { ToggleStorybook } from "../storybook/toggle-storybook"
-import { ErrorBoundary } from "./screens/error/error-boundary"
+import React, { useState, useEffect, useReducer } from "react"
+import { SafeAreaView, TextInput, Text, Button } from "react-native"
+
+import Gun from "gun"
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
@@ -26,48 +22,85 @@ import { ErrorBoundary } from "./screens/error/error-boundary"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
+const gun = Gun({ peers: ["http://localhost:3000/gun"] })
+const initialState = {
+  messages: [],
+}
+
+function reducer(state, message) {
+  return {
+    messages: [...state.messages, message],
+  }
+}
+
 /**
  * This is the root component of our app.
  */
-function App() {
-  const [rootStore, setRootStore] = useState<RootStore | undefined>(undefined)
-  const {
-    initialNavigationState,
-    onNavigationStateChange,
-    isRestored: isNavigationStateRestored,
-  } = useNavigationPersistence(storage, NAVIGATION_PERSISTENCE_KEY)
+export default function App() {
+  const [state, dispatch] = useReducer(reducer, initialState)
 
-  // Kick off initial async loading actions, like loading fonts and RootStore
   useEffect(() => {
-    ;(async () => {
-      await initFonts() // expo
-      setupRootStore().then(setRootStore)
-    })()
+    const messages = gun.get("messages")
+    messages.map().on((m) => {
+      dispatch({
+        name: m?.name,
+        message: m?.message,
+        createdAt: m?.createdAt,
+      })
+    })
   }, [])
 
-  // Before we show the app, we have to wait for our state to be ready.
-  // In the meantime, don't render anything. This will be the background
-  // color set in native by rootView's background color.
-  // In iOS: application:didFinishLaunchingWithOptions:
-  // In Android: https://stackoverflow.com/a/45838109/204044
-  // You can replace with your own loading component if you wish.
-  if (!rootStore || !isNavigationStateRestored) return null
+  const [formState, setFormState] = useState({
+    name: "",
+    message: "",
+  })
 
+  function onChangeName(e) {
+    setFormState({
+      ...formState,
+      name: e,
+    })
+  }
+  function onChangeMessage(e) {
+    setFormState({
+      ...formState,
+      message: e,
+    })
+  }
+  const timeStamp = new Date().toISOString()
+  function saveMessage() {
+    const messages = gun.get("messages")
+    messages.set({
+      name: formState.name,
+      message: formState.message,
+      createdAt: timeStamp,
+    })
+    setFormState({
+      name: "",
+      message: "",
+    })
+  }
   // otherwise, we're ready to render the app
   return (
-    <ToggleStorybook>
-      <RootStoreProvider value={rootStore}>
-        <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-          <ErrorBoundary catchErrors={"always"}>
-            <AppNavigator
-              initialState={initialNavigationState}
-              onStateChange={onNavigationStateChange}
-            />
-          </ErrorBoundary>
-        </SafeAreaProvider>
-      </RootStoreProvider>
-    </ToggleStorybook>
+    <>
+      <SafeAreaView>
+        <TextInput onChangeText={onChangeName} placeholder={`Name`} value={formState.name} />
+        {console.log(formState.name)}
+        <TextInput
+          onChangeText={onChangeMessage}
+          placeholder={`Message`}
+          value={formState.message}
+        />
+        <Button onPress={saveMessage} title="send message"></Button>
+        {console.log(state.messages)}
+        <>
+          {state.messages.map((message) => (
+            <Text key={message.createdAt}>
+              {message.name}: {message.message}
+            </Text>
+          ))}
+        </>
+      </SafeAreaView>
+    </>
   )
 }
-
-export default App
