@@ -12,9 +12,11 @@
 import "./i18n"
 import "./utils/ignore-warnings"
 import React, { useState, useEffect, useReducer } from "react"
-import { SafeAreaView, TextInput, Text, Button } from "react-native"
+import { SafeAreaView, TextInput, Text, Button, ViewStyle } from "react-native"
 
 import Gun from "gun"
+import { theme } from "@storybook/react-native/dist/preview/components/Shared/theme"
+import { VStyle, TStyle, useTheme } from "./context/theme"
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
@@ -22,6 +24,9 @@ import Gun from "gun"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
+const FULL: VStyle = () => ({
+  flex: 1,
+})
 const gun = Gun({ peers: ["http://localhost:3000/gun"] })
 const initialState = {
   messages: [],
@@ -38,7 +43,7 @@ function reducer(state, message) {
  */
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
-
+  const { theme } = useTheme()
   useEffect(() => {
     const messages = gun.get("messages")
     messages.map().on((m) => {
