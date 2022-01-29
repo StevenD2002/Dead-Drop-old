@@ -13,16 +13,14 @@ import {
 import { Screen, Text } from "../../components"
 import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
-import { useStores } from "../../models"
+// import { useStores } from "../../models"
 import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
-import { navigate } from "../../navigators"
 import { ScrollView } from "react-native-gesture-handler"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 const ROOT: ViewStyle = {
   flex: 1,
-  backgroundColor: color.palette.grey,
 }
 const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
 const initialState = {
@@ -39,6 +37,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     margin: "auto",
+    backgroundColor: color.palette.blue,
     borderRadius: 10,
     maxHeight: 40,
     padding: 10,
@@ -49,11 +48,9 @@ const styles = StyleSheet.create({
     color: color.palette.white,
     margin: "auto",
   },
-  message: {},
-  screen: {},
   inputRow: {
-    flexDirection: "row",
     height: 40,
+    flexDirection: "row",
   },
   messageField: {
     padding: 10,
@@ -62,10 +59,9 @@ const styles = StyleSheet.create({
 })
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
-  const { user } = useStores()
+  // const { someStore, anotherStore } = useStores()
   const [state, dispatch] = useReducer(reducer, initialState)
   const { theme } = useTheme()
-
   useEffect(() => {
     const messages = gun.get("messages")
     messages.map().once((m) => {
@@ -79,8 +75,16 @@ export const ChatScreen = observer(function ChatScreen() {
   }, [])
 
   const [formState, setFormState] = useState({
+    name: "",
     message: "",
   })
+
+  function onChangeName(e) {
+    setFormState({
+      ...formState,
+      name: e,
+    })
+  }
   function onChangeMessage(e) {
     setFormState({
       ...formState,
@@ -91,12 +95,13 @@ export const ChatScreen = observer(function ChatScreen() {
   function saveMessage() {
     const messages = gun.get("messages")
     messages.set({
-      name: user.username,
+      name: formState.name,
       message: formState.message,
       createdAt: timeStamp,
       key: uuid.v4(),
     })
     setFormState({
+      name: "",
       message: "",
     })
   }
@@ -105,33 +110,31 @@ export const ChatScreen = observer(function ChatScreen() {
   // const navigation = useNavigation()
   return (
     <Screen style={ROOT} preset="scroll">
-      <View style={styles.screen}>
-        <>
-          <ScrollView
-            keyboardDismissMode="on-drag"
-            ref={scrollViewRef}
-            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-          >
-            {state.messages.map((message) => (
-              <Text key={message.key} style={styles.message}>
-                {message.name}: {message.message}
-              </Text>
-            ))}
-          </ScrollView>
-        </>
+      <>
+        <ScrollView
+          keyboardDismissMode="on-drag"
+          ref={scrollViewRef}
+          onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+        >
+          {state.messages.map((message) => (
+            <Text key={message.key}>
+              {message.name}: {message.message}
+            </Text>
+          ))}
+        </ScrollView>
+      </>
 
-        <View style={styles.inputRow}>
-          <TextInput
-            onChangeText={onChangeMessage}
-            placeholder={`Message`}
-            value={formState.message}
-            style={styles.messageField}
-            multiline={true}
-          />
-          <Pressable onPress={saveMessage} style={styles.button}>
-            <Text style={styles.buttonText}>Send</Text>
-          </Pressable>
-        </View>
+      <View style={styles.inputRow}>
+        <TextInput
+          onChangeText={onChangeMessage}
+          placeholder={`Message`}
+          value={formState.message}
+          style={styles.messageField}
+          multiline={true}
+        />
+        <Pressable onPress={saveMessage} style={styles.button}>
+          <Text style={styles.buttonText}>Send</Text>
+        </Pressable>
       </View>
     </Screen>
   )
