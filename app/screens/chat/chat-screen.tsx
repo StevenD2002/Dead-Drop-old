@@ -13,10 +13,11 @@ import {
 import { Screen, Text } from "../../components"
 import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
+import { useStores } from "../../models"
 import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
+import { navigate } from "../../navigators"
 import { ScrollView } from "react-native-gesture-handler"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 const ROOT: ViewStyle = {
@@ -48,6 +49,7 @@ const styles = StyleSheet.create({
     color: color.palette.white,
     margin: "auto",
   },
+  message: {},
   screen: {},
   inputRow: {
     flexDirection: "row",
@@ -60,9 +62,10 @@ const styles = StyleSheet.create({
 })
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const { user } = useStores()
   const [state, dispatch] = useReducer(reducer, initialState)
   const { theme } = useTheme()
+
   useEffect(() => {
     const messages = gun.get("messages")
     messages.map().once((m) => {
@@ -76,16 +79,8 @@ export const ChatScreen = observer(function ChatScreen() {
   }, [])
 
   const [formState, setFormState] = useState({
-    name: "",
     message: "",
   })
-
-  function onChangeName(e) {
-    setFormState({
-      ...formState,
-      name: e,
-    })
-  }
   function onChangeMessage(e) {
     setFormState({
       ...formState,
@@ -96,13 +91,12 @@ export const ChatScreen = observer(function ChatScreen() {
   function saveMessage() {
     const messages = gun.get("messages")
     messages.set({
-      name: formState.name,
+      name: user.username,
       message: formState.message,
       createdAt: timeStamp,
       key: uuid.v4(),
     })
     setFormState({
-      name: "",
       message: "",
     })
   }

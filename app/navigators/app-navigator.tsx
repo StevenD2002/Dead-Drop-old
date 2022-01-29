@@ -8,7 +8,7 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { WelcomeScreen, DemoScreen, DemoListScreen, ChatScreen } from "../screens"
+import { WelcomeScreen, DemoScreen, DemoListScreen, ChatScreen, LoginScreen } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 import symbolicateStackTrace from "react-native/Libraries/Core/Devtools/symbolicateStackTrace"
 
@@ -26,6 +26,7 @@ import symbolicateStackTrace from "react-native/Libraries/Core/Devtools/symbolic
  */
 export type NavigatorParamList = {
   chat: undefined
+  login: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -37,8 +38,9 @@ const AppStack = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="chat"
+      initialRouteName="login"
     >
+      <Stack.Screen name="login" component={LoginScreen} />
       <Stack.Screen name="chat" component={ChatScreen} />
     </Stack.Navigator>
   )
