@@ -12,8 +12,8 @@
 import "./i18n"
 import "./utils/ignore-warnings"
 import React, { useState, useEffect, useReducer } from "react"
-import { SafeAreaView, TextInput, Text, Button, ViewStyle } from "react-native"
-
+import { SafeAreaView, TextInput, Text, Button, ScrollView } from "react-native"
+import uuid from "react-native-uuid"
 import Gun from "gun"
 import { theme } from "@storybook/react-native/dist/preview/components/Shared/theme"
 import { VStyle, TStyle, useTheme } from "./context/theme"
@@ -24,10 +24,7 @@ import { VStyle, TStyle, useTheme } from "./context/theme"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
-const FULL: VStyle = () => ({
-  flex: 1,
-})
-const gun = Gun({ peers: ["http://localhost:3000/gun"] })
+const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
 const initialState = {
   messages: [],
 }
@@ -46,11 +43,12 @@ export default function App() {
   const { theme } = useTheme()
   useEffect(() => {
     const messages = gun.get("messages")
-    messages.map().on((m) => {
+    messages.map().once((m) => {
       dispatch({
         name: m?.name,
         message: m?.message,
         createdAt: m?.createdAt,
+        key: m?.key,
       })
     })
   }, [])
@@ -79,6 +77,7 @@ export default function App() {
       name: formState.name,
       message: formState.message,
       createdAt: timeStamp,
+      key: uuid.v4(),
     })
     setFormState({
       name: "",
@@ -98,13 +97,15 @@ export default function App() {
         />
         <Button onPress={saveMessage} title="send message"></Button>
         {console.log(state.messages)}
-        <>
-          {state.messages.map((message) => (
-            <Text key={message.createdAt}>
-              {message.name}: {message.message}
-            </Text>
-          ))}
-        </>
+        <ScrollView>
+          <>
+            {state.messages.map((message) => (
+              <Text key={message.key}>
+                {message.name}: {message.message}
+              </Text>
+            ))}
+          </>
+        </ScrollView>
       </SafeAreaView>
     </>
   )
