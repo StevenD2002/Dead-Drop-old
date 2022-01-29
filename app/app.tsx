@@ -22,7 +22,7 @@ import Gun from "gun"
 
 export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 
-const gun = Gun({ peers: ["http://localhost:3000/gun"] })
+const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
 const initialState = {
   messages: [],
 }
