@@ -16446,6 +16446,11 @@
   "resolved" "https://registry.npmjs.org/react-native-swipe-gestures/-/react-native-swipe-gestures-1.0.5.tgz"
   "version" "1.0.5"
 
+"react-native-uuid@^2.0.1":
+  "integrity" "sha512-cptnoIbL53GTCrWlb/+jrDC6tvb7ypIyzbXNJcpR3Vab0mkeaaVd5qnB3f0whXYzS+SMoSQLcUUB0gEWqkPC0g=="
+  "resolved" "https://registry.npmjs.org/react-native-uuid/-/react-native-uuid-2.0.1.tgz"
+  "version" "2.0.1"
+
 "react-native-web@^0.16.3", "react-native-web@~0.13.7":
   "integrity" "sha512-bsoSq9pnjPerNKC1uzvJi7464to3SSMbGG9QFdj6woV3xk5fhq2jB2vQ5+iH/KC7F5lpDRukcb2hMHL1rzKJUQ=="
   "resolved" "https://registry.npmjs.org/react-native-web/-/react-native-web-0.16.5.tgz"

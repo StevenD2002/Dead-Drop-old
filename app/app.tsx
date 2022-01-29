@@ -12,8 +12,8 @@
 import "./i18n"
 import "./utils/ignore-warnings"
 import React, { useState, useEffect, useReducer } from "react"
-import { SafeAreaView, TextInput, Text, Button } from "react-native"
-
+import { SafeAreaView, TextInput, Text, Button, ScrollView } from "react-native"
+import uuid from "react-native-uuid"
 import Gun from "gun"
 
 // This puts screens in a native ViewController or Activity. If you want fully native
@@ -41,11 +41,12 @@ export default function App() {
 
   useEffect(() => {
     const messages = gun.get("messages")
-    messages.map().on((m) => {
+    messages.map().once((m) => {
       dispatch({
         name: m?.name,
         message: m?.message,
         createdAt: m?.createdAt,
+        key: m?.key,
       })
     })
   }, [])
@@ -74,6 +75,7 @@ export default function App() {
       name: formState.name,
       message: formState.message,
       createdAt: timeStamp,
+      key: uuid.v4(),
     })
     setFormState({
       name: "",
@@ -93,13 +95,15 @@ export default function App() {
         />
         <Button onPress={saveMessage} title="send message"></Button>
         {console.log(state.messages)}
-        <>
-          {state.messages.map((message) => (
-            <Text key={message.createdAt}>
-              {message.name}: {message.message}
-            </Text>
-          ))}
-        </>
+        <ScrollView>
+          <>
+            {state.messages.map((message) => (
+              <Text key={message.key}>
+                {message.name}: {message.message}
+              </Text>
+            ))}
+          </>
+        </ScrollView>
       </SafeAreaView>
     </>
   )
