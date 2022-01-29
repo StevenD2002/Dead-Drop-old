@@ -4,7 +4,7 @@ import { Button, TextInput, ViewStyle } from "react-native"
 import { Screen, Text } from "../../components"
 import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
+import { useStores } from "../../models"
 import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
@@ -28,9 +28,10 @@ const INPUT = {
 }
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const { user } = useStores()
   const [state, dispatch] = useReducer(reducer, initialState)
   const { theme } = useTheme()
+
   useEffect(() => {
     const messages = gun.get("messages")
     messages.map().once((m) => {
@@ -44,16 +45,8 @@ export const ChatScreen = observer(function ChatScreen() {
   }, [])
 
   const [formState, setFormState] = useState({
-    name: "",
-    message: "",
+    message: ""
   })
-
-  function onChangeName(e) {
-    setFormState({
-      ...formState,
-      name: e,
-    })
-  }
   function onChangeMessage(e) {
     setFormState({
       ...formState,
@@ -64,14 +57,13 @@ export const ChatScreen = observer(function ChatScreen() {
   function saveMessage() {
     const messages = gun.get("messages")
     messages.set({
-      name: formState.name,
+      name: user.username,
       message: formState.message,
       createdAt: timeStamp,
       key: uuid.v4(),
     })
     setFormState({
-      name: "",
-      message: "",
+      message: ""
     })
   }
   // Pull in navigation via hook
@@ -86,7 +78,6 @@ export const ChatScreen = observer(function ChatScreen() {
         ))}
       </>
 
-      <TextInput onChangeText={onChangeName} placeholder={`Name`} value={formState.name} />
       <TextInput onChangeText={onChangeMessage} placeholder={`Message`} value={formState.message} />
       <Button onPress={saveMessage} title="send message"></Button>
     </Screen>

@@ -1,6 +1,7 @@
 import { onSnapshot } from "mobx-state-tree"
 import { RootStoreModel, RootStore } from "./root-store"
 import { Environment } from "../environment"
+import { UserModel } from "../user/user"
 import * as storage from "../../utils/storage"
 
 /**
@@ -37,7 +38,9 @@ export async function setupRootStore() {
   } catch (e) {
     // if there's any problems loading, then let's at least fallback to an empty state
     // instead of crashing.
-    rootStore = RootStoreModel.create({}, env)
+    rootStore = RootStoreModel.create({
+      user: UserModel.create()
+    }, env)
 
     // but please inform us what happened
     __DEV__ && console.tron.error(e.message, null)
