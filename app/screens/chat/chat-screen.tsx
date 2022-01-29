@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Button, TextInput, ViewStyle } from "react-native"
+import { Button, TextInput, ViewStyle, StyleSheet } from "react-native"
 import { Screen, Text } from "../../components"
 import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
@@ -8,6 +8,7 @@ import { useStores } from "../../models"
 import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
+import { navigate } from "../../navigators"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -22,6 +23,12 @@ function reducer(state, message) {
     messages: [...state.messages, message],
   }
 }
+
+const styles = StyleSheet.create({
+  login: {
+    position: "absolute",
+  },
+})
 
 const INPUT = {
   flexDirection: "row",
@@ -45,7 +52,7 @@ export const ChatScreen = observer(function ChatScreen() {
   }, [])
 
   const [formState, setFormState] = useState({
-    message: ""
+    message: "",
   })
   function onChangeMessage(e) {
     setFormState({
@@ -63,7 +70,7 @@ export const ChatScreen = observer(function ChatScreen() {
       key: uuid.v4(),
     })
     setFormState({
-      message: ""
+      message: "",
     })
   }
   // Pull in navigation via hook
@@ -80,6 +87,9 @@ export const ChatScreen = observer(function ChatScreen() {
 
       <TextInput onChangeText={onChangeMessage} placeholder={`Message`} value={formState.message} />
       <Button onPress={saveMessage} title="send message"></Button>
+      <Button onPress={navigate("login")} style={styles.login} title="login">
+        <Text>Login</Text>
+      </Button>
     </Screen>
   )
 })

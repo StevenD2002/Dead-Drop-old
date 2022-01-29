@@ -24,10 +24,8 @@ import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type NavigatorParamList = {
-  welcome: undefined
-  demo: undefined
-  demoList: undefined
   chat: undefined
+  login: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/

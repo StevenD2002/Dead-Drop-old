@@ -3,18 +3,19 @@ import { observer } from "mobx-react-lite"
 import { ViewStyle } from "react-native"
 import { Button, Screen, Text, TextField } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
-import { navigate } from "../../navigators";
+import { navigate } from "../../navigators"
 import { useStores } from "../../models"
 import { color } from "../../theme"
+import { TextInput } from "react-native-gesture-handler"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 const ROOT: ViewStyle = {
-  backgroundColor: color.palette.black,
   flex: 1,
 }
 
 export const LoginScreen = observer(function LoginScreen() {
   // Pull in one of our MST stores
-  const { user } = useStores();
+  const { user } = useStores()
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
@@ -23,29 +24,28 @@ export const LoginScreen = observer(function LoginScreen() {
   })
 
   function login(event) {
-    let username = formState.username;
-    user.login(username);
+    let username = formState.username
+    user.login(username)
 
-    navigate("chat");
+    navigate("chat")
 
-    event.preventDefault();
-    return false;
+    event.preventDefault()
+    return false
   }
 
   function changeUsername(value) {
     setFormState({
       ...formState,
-      username: value
+      username: value,
     })
   }
 
-
   return (
     <Screen style={ROOT} preset="scroll">
-      <form onSubmit={login}>
-        <TextField placeholder="Display Name" value={formState.username} onChangeText={changeUsername}/>
-        <Button text="Login" onPress={login}/>
-      </form>
+      <SafeAreaView>
+        <TextInput onChangeText={changeUsername} value={formState.username} />
+        <Button text="Login" onPress={login} />
+      </SafeAreaView>
     </Screen>
   )
 })
