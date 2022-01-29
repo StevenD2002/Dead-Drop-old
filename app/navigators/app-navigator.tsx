@@ -10,6 +10,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { WelcomeScreen, DemoScreen, DemoListScreen, ChatScreen } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
+import symbolicateStackTrace from "react-native/Libraries/Core/Devtools/symbolicateStackTrace"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -24,9 +25,6 @@ import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type NavigatorParamList = {
-  welcome: undefined
-  demo: undefined
-  demoList: undefined
   chat: undefined
 }
 
