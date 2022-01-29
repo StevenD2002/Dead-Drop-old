@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Button, TextInput, ViewStyle, StyleSheet } from "react-native"
+import { Button, Pressable, TextInput, View, ViewStyle, StyleSheet, Dimensions } from "react-native"
 import { Screen, Text } from "../../components"
 import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
@@ -24,16 +24,27 @@ function reducer(state, message) {
     messages: [...state.messages, message],
   }
 }
-
+const width = Dimensions.get("window").width
 const styles = StyleSheet.create({
-  login: {
-    position: "absolute",
+  button: {
+    alignItems: "center",
+    backgroundColor: color.palette.blue,
+    borderRadius: 10,
+    maxHeight: 40,
+    padding: 10,
+    width: 100,
+  },
+  buttonText: {
+    color: color.palette.white,
+  },
+  inputRow: {
+    flexDirection: "row",
+  },
+  messageField: {
+    padding: 10,
+    width: width - 100,
   },
 })
-
-const INPUT = {
-  flexDirection: "row",
-}
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
   const { user } = useStores()
@@ -78,22 +89,28 @@ export const ChatScreen = observer(function ChatScreen() {
   // const navigation = useNavigation()
   return (
     <Screen style={ROOT} preset="scroll">
-      <ScrollView>
-        <>
+      <>
+        <ScrollView>
           {state.messages.map((message) => (
             <Text key={message.key}>
               {message.name}: {message.message}
             </Text>
           ))}
-        </>
+        </ScrollView>
+      </>
 
+      <View style={styles.inputRow}>
         <TextInput
           onChangeText={onChangeMessage}
           placeholder={`Message`}
           value={formState.message}
+          style={styles.messageField}
+          multiline={true}
         />
-        <Button onPress={saveMessage} title="send message"></Button>
-      </ScrollView>
+        <Pressable onPress={saveMessage} style={styles.button}>
+          <Text style={styles.buttonText}>Send</Text>
+        </Pressable>
+      </View>
     </Screen>
   )
 })
