@@ -9,6 +9,7 @@ import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
 import { navigate } from "../../navigators"
+import { ScrollView } from "react-native-gesture-handler"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -77,19 +78,22 @@ export const ChatScreen = observer(function ChatScreen() {
   // const navigation = useNavigation()
   return (
     <Screen style={ROOT} preset="scroll">
-      <>
-        {state.messages.map((message) => (
-          <Text key={message.key}>
-            {message.name}: {message.message}
-          </Text>
-        ))}
-      </>
+      <ScrollView>
+        <>
+          {state.messages.map((message) => (
+            <Text key={message.key}>
+              {message.name}: {message.message}
+            </Text>
+          ))}
+        </>
 
-      <TextInput onChangeText={onChangeMessage} placeholder={`Message`} value={formState.message} />
-      <Button onPress={saveMessage} title="send message"></Button>
-      <Button onPress={navigate("login")} style={styles.login} title="login">
-        <Text>Login</Text>
-      </Button>
+        <TextInput
+          onChangeText={onChangeMessage}
+          placeholder={`Message`}
+          value={formState.message}
+        />
+        <Button onPress={saveMessage} title="send message"></Button>
+      </ScrollView>
     </Screen>
   )
 })
