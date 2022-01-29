@@ -15,6 +15,8 @@ import React, { useState, useEffect, useReducer } from "react"
 import { SafeAreaView, TextInput, Text, Button, ScrollView } from "react-native"
 import uuid from "react-native-uuid"
 import Gun from "gun"
+import { theme } from "@storybook/react-native/dist/preview/components/Shared/theme"
+import { VStyle, TStyle, useTheme } from "./context/theme"
 
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
@@ -38,7 +40,7 @@ function reducer(state, message) {
  */
 export default function App() {
   const [state, dispatch] = useReducer(reducer, initialState)
-
+  const { theme } = useTheme()
   useEffect(() => {
     const messages = gun.get("messages")
     messages.map().once((m) => {
