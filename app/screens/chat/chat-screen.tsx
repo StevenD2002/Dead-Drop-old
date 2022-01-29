@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     margin: "auto",
-    backgroundColor: color.palette.blue,
     borderRadius: 10,
     maxHeight: 40,
     padding: 10,
@@ -49,9 +48,7 @@ const styles = StyleSheet.create({
     color: color.palette.white,
     margin: "auto",
   },
-  screen: {
-    backgroundColor: color.palette.grey,
-  },
+  screen: {},
   inputRow: {
     flexDirection: "row",
     height: 40,
