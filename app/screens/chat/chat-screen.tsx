@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
   },
   messageGroup: {
     marginBottom: 10,
+    padding: 10,
   },
   settingsButton: {
     backgroundColor: color.palette.blue,
