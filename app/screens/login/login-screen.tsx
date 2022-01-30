@@ -83,6 +83,8 @@ export const LoginScreen = observer(function LoginScreen() {
           onChangeText={changeUsername}
           value={formState.username}
           style={styles.loginForm}
+          placeholder="Username..."
+          placeholderTextColor="rgba(255, 255, 255, 0.8)"
         />
         <Pressable onPress={login} style={styles.button}>
           <Text style={styles.font}>log in</Text>

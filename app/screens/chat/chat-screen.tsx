@@ -29,6 +29,7 @@ const ROOT: ViewStyle = {
   backgroundColor: "#404040",
 }
 
+const GUN_MESSAGES_DB_KEY = "messages"
 const MESSAGE_THROTTLE_MS = 250
 
 const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
@@ -114,7 +115,7 @@ export const ChatScreen = observer(function ChatScreen() {
   let message_queue = []
 
   useEffect(() => {
-    const messages = gun.get("messages")
+    const messages = gun.get(GUN_MESSAGES_DB_KEY)
     messages.map().once((m) => receiveMessage(m))
   }, [])
 
