@@ -18,6 +18,8 @@ import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
 import { ScrollView } from "react-native-gesture-handler"
+import { navigate } from "../../navigators"
+
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 const ROOT: ViewStyle = {
   flex: 1,
@@ -59,6 +61,17 @@ const styles = StyleSheet.create({
     height: 70,
     width: width - 100,
   },
+
+  settingsButton: {
+    backgroundColor: color.palette.blue,
+    alignItems: "center",
+    borderRadius: 10,
+    maxHeight: 40,
+    padding: 10,
+    width: 100,
+    position: "absolute",
+    zIndex: 3,
+  },
 })
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
@@ -90,6 +103,11 @@ export const ChatScreen = observer(function ChatScreen() {
       message: e,
     })
   }
+
+  const onPressHandler = () => {
+    navigate("settings")
+  }
+
   const timeStamp = new Date().toISOString()
   function saveMessage() {
     const messages = gun.get("messages")
@@ -109,6 +127,9 @@ export const ChatScreen = observer(function ChatScreen() {
   // const navigation = useNavigation()
   return (
     <Screen style={ROOT} preset="scroll">
+      <Pressable onPress={onPressHandler} style={styles.settingsButton}>
+        <Text style={styles.buttonText}>Settings</Text>
+      </Pressable>
       <>
         <ScrollView
           keyboardDismissMode="on-drag"
