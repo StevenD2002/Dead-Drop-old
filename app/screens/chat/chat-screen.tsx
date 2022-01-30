@@ -13,12 +13,11 @@ import {
 import { Screen, Text } from "../../components"
 import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
+import { useStores } from "../../models"
 import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
 import { ScrollView } from "react-native-gesture-handler"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 const ROOT: ViewStyle = {
   flex: 1,
 }
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
 })
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const { user } = useStores()
   const [state, dispatch] = useReducer(reducer, initialState)
   const { theme } = useTheme()
   useEffect(() => {
@@ -82,6 +81,8 @@ export const ChatScreen = observer(function ChatScreen() {
     message: "",
   })
 
+  const [shouldScrollDown, setShouldScrollDown] = useState(true)
+
   function onChangeMessage(e) {
     setFormState({
       ...formState,
@@ -91,8 +92,9 @@ export const ChatScreen = observer(function ChatScreen() {
   const timeStamp = new Date().toISOString()
   function saveMessage() {
     const messages = gun.get("messages")
+    console.log(formState.message)
     messages.set({
-      name: formState.name,
+      name: user.username,
       message: formState.message,
       createdAt: timeStamp,
       key: uuid.v4(),
@@ -101,22 +103,33 @@ export const ChatScreen = observer(function ChatScreen() {
       name: "",
       message: "",
     })
+    setShouldScrollDown(true)
   }
   const scrollViewRef = useRef()
+
+  function scrollToEnd(ref: React.MutableRefObject<ScrollView>) {
+    if (shouldScrollDown == true) {
+      ref.current.scrollToEnd({ animated: true })
+    }
+    
+  }
+
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
     <Screen style={ROOT} preset="scroll">
       <>
         <ScrollView
-          keyboardDismissMode="on-drag"
+          keyboardDismissMode="interactive"
           ref={scrollViewRef}
-          onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+          onContentSizeChange={() => scrollToEnd(scrollViewRef)}
+          onScroll={() => setShouldScrollDown(false)}
+          scrollEventThrottle={100}
         >
           <View>
             {state?.messages
               ?.filter((f) => {
-                if (f.message && f.name) {
+                if (f.message && f.name && f.key) {
                   return f
                 }
               })
@@ -128,7 +141,9 @@ export const ChatScreen = observer(function ChatScreen() {
           </View>
         </ScrollView>
       </>
+
       <KeyboardAvoidingView>
+        <Text>Logged in as {user.username}</Text>
         <View style={styles.inputRow}>
           <TextInput
             onChangeText={onChangeMessage}
