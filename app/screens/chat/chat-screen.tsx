@@ -18,19 +18,25 @@ import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
 import { ScrollView } from "react-native-gesture-handler"
+import { navigate } from "../../navigators"
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
+import { faCog } from "@fortawesome/free-solid-svg-icons"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 const ROOT: ViewStyle = {
   flex: 1,
   backgroundColor: "#404040",
 }
+
+const MESSAGE_THROTTLE_MS = 250
+
 const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
 const initialState = {
   messages: [],
 }
 
-function reducer(state, message) {
+function reducer(state, messages) {
   return {
-    messages: [...state.messages, message],
+    messages: [...messages],
   }
 }
 const width = Dimensions.get("window").width
@@ -68,6 +74,15 @@ const styles = StyleSheet.create({
   text: {
     color: color.palette.white,
   },
+  settingsButton: {
+    backgroundColor: color.palette.blue,
+    alignItems: "center",
+    borderRadius: 100,
+    right: 10,
+    padding: 10,
+    position: "absolute",
+    zIndex: 3,
+  },
 })
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
@@ -76,17 +91,35 @@ export const ChatScreen = observer(function ChatScreen() {
   const { theme } = useTheme()
   const name = useRef("")
 
+  let last_message_timestamp: number = 0
+  let render_message_timeout: NodeJS.Timeout | null = null
+  let message_queue = []
+
   useEffect(() => {
     const messages = gun.get("messages")
-    messages.map().once((m) => {
-      dispatch({
-        name: m?.name,
-        message: m?.message,
-        createdAt: m?.createdAt,
-        key: m?.key,
-      })
-    })
+    messages.map().once((m) => receiveMessage(m))
   }, [])
+
+  function receiveMessage(message) {
+    if (!message?.message || !message?.name) {
+      return
+    }
+    message_queue.push(message)
+    if (render_message_timeout !== null) {
+      return
+    }
+
+    // throttle render
+    const ms = Date.now()
+
+    let delay = Math.max(0, MESSAGE_THROTTLE_MS - (ms - last_message_timestamp))
+    last_message_timestamp = ms
+
+    render_message_timeout = setTimeout(() => {
+      dispatch(message_queue)
+      render_message_timeout = null
+    }, delay)
+  }
 
   const [formState, setFormState] = useState({
     name: "",
@@ -99,6 +132,11 @@ export const ChatScreen = observer(function ChatScreen() {
       message: e,
     })
   }
+
+  const onPressHandler = () => {
+    navigate("settings")
+  }
+
   const timeStamp = new Date().toISOString()
   function saveMessage() {
     const messages = gun.get("messages")
@@ -118,6 +156,9 @@ export const ChatScreen = observer(function ChatScreen() {
   // const navigation = useNavigation()
   return (
     <Screen style={ROOT} preset="scroll">
+      <Pressable onPress={onPressHandler} style={styles.settingsButton}>
+        <FontAwesomeIcon icon={faCog} size={20} color={color.palette.white} />
+      </Pressable>
       <>
         <ScrollView
           keyboardDismissMode="on-drag"
@@ -125,17 +166,11 @@ export const ChatScreen = observer(function ChatScreen() {
           onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
         >
           <View>
-            {state?.messages
-              .filter((m) => {
-                if (m.message && m.name) {
-                  return m
-                }
-              })
-              .map((message) => (
-                <Text key={message.key} style={styles.text}>
-                  {message.name} : {message.message}
-                </Text>
-              ))}
+            {state?.messages.map((message) => (
+              <Text key={message.key} style={styles.text}>
+                {message.name} : {message.message}
+              </Text>
+            ))}
           </View>
         </ScrollView>
       </>
