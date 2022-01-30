@@ -14,10 +14,14 @@ export const UserModel = types
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
-    login(username: string) {
+    setUsername(username: string) {
+      if (username.length == 0) {
+        return false;
+      }
       self.username = username
+      return true;
     },
-    logout() {
+    forget() {
       self.username = null
     }
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
