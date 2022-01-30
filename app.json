@@ -9,16 +9,14 @@
     "icon": "./assets/images/icon.png",
     "owner": "natelier",
     "splash": {
-      "image": "./assets/images/DeadDropTransparent.png",
+      "image": "./assets/images/DeadDropGlitch.png",
       "resizeMode": "contain",
       "backgroundColor": "#404040"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "sh.natalie.dead-drop"

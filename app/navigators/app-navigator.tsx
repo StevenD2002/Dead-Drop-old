@@ -61,11 +61,7 @@ export const AppNavigator = (props: NavigationProps) => {
   const colorScheme = useColorScheme()
   useBackButtonHandler(canExit)
   return (
-    <NavigationContainer
-      ref={navigationRef}
-      theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-      {...props}
-    >
+    <NavigationContainer ref={navigationRef} theme={DarkTheme} {...props}>
       <AppStack />
     </NavigationContainer>
   )

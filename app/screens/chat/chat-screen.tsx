@@ -171,7 +171,7 @@ export const ChatScreen = observer(function ChatScreen() {
   const scrollViewRef = useRef()
 
   function scrollToEnd(ref: React.MutableRefObject<ScrollView>) {
-    if (shouldScrollDown == true) {
+    if (shouldScrollDown === true) {
       ref.current.scrollToEnd({ animated: true })
     }
   }
