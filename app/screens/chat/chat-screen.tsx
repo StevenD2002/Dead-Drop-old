@@ -64,6 +64,8 @@ export const ChatScreen = observer(function ChatScreen() {
   const { user } = useStores()
   const [state, dispatch] = useReducer(reducer, initialState)
   const { theme } = useTheme()
+  const name = useRef("")
+
   useEffect(() => {
     const messages = gun.get("messages")
     messages.map().once((m) => {
@@ -130,6 +132,7 @@ export const ChatScreen = observer(function ChatScreen() {
               ?.filter((f) => {
                 if (f.message && f.name && f.key) {
                   return f
+
                 }
               })
               .map((message) => (
