@@ -135,6 +135,8 @@ export const ChatScreen = observer(function ChatScreen() {
     message: "",
   })
 
+  const [shouldScrollDown, setShouldScrollDown] = useState(true)
+
   function onChangeMessage(e) {
     setFormState({
       ...formState,
@@ -148,7 +150,12 @@ export const ChatScreen = observer(function ChatScreen() {
 
   const timeStamp = new Date().toISOString()
   function saveMessage() {
+    let message = formState.message.trim()
+    if (message.length == 0) {
+      return
+    }
     const messages = gun.get("messages")
+    console.log(formState.message)
     messages.set({
       name: user.username,
       message: formState.message,
@@ -159,8 +166,16 @@ export const ChatScreen = observer(function ChatScreen() {
       name: "",
       message: "",
     })
+    setShouldScrollDown(true)
   }
   const scrollViewRef = useRef()
+
+  function scrollToEnd(ref: React.MutableRefObject<ScrollView>) {
+    if (shouldScrollDown == true) {
+      ref.current.scrollToEnd({ animated: true })
+    }
+  }
+
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
@@ -171,9 +186,10 @@ export const ChatScreen = observer(function ChatScreen() {
         </Pressable>
         <>
           <ScrollView
-            keyboardDismissMode="on-drag"
             ref={scrollViewRef}
-            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+            onContentSizeChange={() => scrollToEnd(scrollViewRef)}
+            onScroll={() => setShouldScrollDown(false)}
+            scrollEventThrottle={100}
           >
             <View>
               {state?.messages.map((message) => (

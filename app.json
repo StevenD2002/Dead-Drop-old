@@ -3,10 +3,11 @@
   "displayName": "DeadDrop",
   "expo": {
     "name": "DeadDrop",
-    "slug": "DeadDrop",
+    "slug": "dead-drop",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
+    "owner": "natelier",
     "splash": {
       "image": "./assets/images/DeadDropTransparent.png",
       "resizeMode": "contain",
@@ -15,12 +16,16 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "sh.natalie.dead-drop"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
-    }
+    },
+    "description": ""
   }
 }
