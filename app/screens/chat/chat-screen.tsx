@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
     height: 40,
     width: width - 100,
   },
-  text: {
-    color: color.palette.white,
+  messageGroup: {
+    marginBottom: 10,
   },
   settingsButton: {
     backgroundColor: color.palette.blue,
@@ -82,6 +82,13 @@ const styles = StyleSheet.create({
     padding: 10,
     position: "absolute",
     zIndex: 3,
+  },
+  textMessage: {
+    color: color.palette.white,
+  },
+  textName: {
+    fontWeight: "bold",
+    color: color.palette.white,
   },
 })
 export const ChatScreen = observer(function ChatScreen() {
@@ -167,9 +174,10 @@ export const ChatScreen = observer(function ChatScreen() {
         >
           <View>
             {state?.messages.map((message) => (
-              <Text key={message.key} style={styles.text}>
-                {message.name} : {message.message}
-              </Text>
+              <View key={message.key} style={styles.messageGroup}>
+                <Text style={styles.textName}>{message.name}: </Text>
+                <Text style={styles.textMessage}>{message.message}</Text>
+              </View>
             ))}
           </View>
         </ScrollView>
