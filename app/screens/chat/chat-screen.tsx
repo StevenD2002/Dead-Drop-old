@@ -13,7 +13,7 @@ import {
 import { Screen, Text } from "../../components"
 import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
+import { useStores } from "../../models"
 import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
@@ -62,9 +62,11 @@ const styles = StyleSheet.create({
 })
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const { user } = useStores()
   const [state, dispatch] = useReducer(reducer, initialState)
   const { theme } = useTheme()
+  const name = useRef("")
+
   useEffect(() => {
     const messages = gun.get("messages")
     messages.map().once((m) => {
@@ -92,7 +94,7 @@ export const ChatScreen = observer(function ChatScreen() {
   function saveMessage() {
     const messages = gun.get("messages")
     messages.set({
-      name: formState.name,
+      name: user.username,
       message: formState.message,
       createdAt: timeStamp,
       key: uuid.v4(),
@@ -115,9 +117,9 @@ export const ChatScreen = observer(function ChatScreen() {
         >
           <View>
             {state?.messages
-              ?.filter((f) => {
-                if (f.message && f.name) {
-                  return f
+              .filter((m) => {
+                if (m.message && m.name) {
+                  return m
                 }
               })
               .map((message) => (

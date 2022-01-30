@@ -40,8 +40,8 @@ const AppStack = () => {
       }}
       initialRouteName="login"
     >
-      <Stack.Screen name="login" component={LoginScreen} />
       <Stack.Screen name="chat" component={ChatScreen} />
+      <Stack.Screen name="login" component={LoginScreen} />
     </Stack.Navigator>
   )
 }
