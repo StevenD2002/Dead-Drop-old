@@ -1,21 +1,26 @@
 import React from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, StyleSheet, TouchableOpacity, View } from "react-native"
+import { ViewStyle, StyleSheet, TouchableOpacity, View, Image } from "react-native"
 import { Button, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "../../models"
 import { color } from "../../theme"
 import { TextInput } from "react-native-gesture-handler"
+import { navigate } from "../../navigators"
 
 const ROOT: ViewStyle = {
-  backgroundColor: color.palette.blue,
+  backgroundColor: color.palette.darkGrey,
   flex: 1,
+}
+
+const handleNavigate =()=> {
+  navigate("chat")
 }
 
 const styles= StyleSheet.create({
   header: {
     color: "#e6e6e6",
-    fontSize: 35,
+    fontSize: 40,
     fontFamily: "Futura",
     alignSelf: "center",
     marginTop: 40,
@@ -23,11 +28,11 @@ const styles= StyleSheet.create({
 
   title: {
     color: "#e6e6e6",
-    fontSize: 20,
+    fontSize: 25,
     fontFamily: "Futura",
     marginTop: 70,
-    marginBottom: 10,
-    alignSelf: "center"
+    marginBottom: 15,
+    alignSelf: "center",
   },
   
   inputField: {
@@ -37,24 +42,30 @@ const styles= StyleSheet.create({
     alignSelf: "center",
   },
 
-//  button: {
-//    backgroundColor: "#000000",
-//    marginTop: 40,
-//    height: 50,
-//    width: 300,
-//    alignSelf: "center"
-//  },
-
   TouchableOpacity:{
     paddingHorizontal:10,
     paddingVertical:5,
     borderRadius:5,
-    marginTop: 60,
+    marginTop: 80,
     height: 50,
     width: 200,
     alignSelf: "center",
+    borderWidth: 2,
     borderColor:'white',
-    backgroundColor: color.palette.offWhite
+    backgroundColor: "#0167b1",
+  },
+
+  TouchableOpacityBackButton:{
+    paddingHorizontal:10,
+    paddingVertical:5,
+    borderRadius:5,
+    marginTop: 70,
+    height: 50,
+    width: 200,
+    alignSelf: "center",
+    borderWidth: 2,
+    borderColor:'white',
+    backgroundColor: "#0167b1",
   }
 })
 
@@ -81,12 +92,26 @@ const onChangeName = () => {
      
       <TouchableOpacity activeOpacity={0.5} style={styles.TouchableOpacity} onPress={onPressHandler}>
         <View>
-          <Text style={{fontSize:25, color: color.palette.blue, alignSelf: "center", marginTop:5, fontStyle: "italic"}}>Done!</Text>
+          <Text style={{fontSize:25, color: color.palette.offWhite, alignSelf: "center", marginTop:5, fontWeight: "500", fontStyle: "normal"}}>Done!</Text>
         </View>
       </TouchableOpacity>
+
+      <TouchableOpacity activeOpacity={0.5} style={styles.TouchableOpacityBackButton} onPress={handleNavigate}>
+        <View>
+          <Text style={{fontSize:25, color: color.palette.offWhite, alignSelf: "center", marginTop:5, fontWeight: "500", fontStyle: "normal"}}>Back</Text>
+        </View>
+      </TouchableOpacity>
+
+      <Image source={require("../../../assets/images/DeadDropTransparent2.png")} />
 
     </Screen>
   )
 })
 
-//      <Button title="Done" onPress={()=>{}} style={styles.button}/>
+//    shadowOpacity: .5,
+//textShadowColor: "#0167b1",
+//textShadowRadius: 5
+
+//    shadowOpacity: 1,
+//textShadowColor: "#0167b1",
+//textShadowRadius: 5,

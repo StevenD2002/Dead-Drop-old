@@ -8,9 +8,9 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/DeadDropGlitch.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#404040"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
