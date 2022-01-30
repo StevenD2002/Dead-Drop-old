@@ -24,14 +24,17 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 const ROOT: ViewStyle = {
   flex: 1,
 }
+
+const MESSAGE_THROTTLE_MS = 250;
+
 const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
 const initialState = {
   messages: [],
 }
 
-function reducer(state, message) {
+function reducer(state, messages) {
   return {
-    messages: [...state.messages, message],
+    messages: [...messages],
   }
 }
 const width = Dimensions.get("window").width
@@ -80,17 +83,35 @@ export const ChatScreen = observer(function ChatScreen() {
   const { theme } = useTheme()
   const name = useRef("")
 
+  let last_message_timestamp: number = 0
+  let render_message_timeout: NodeJS.Timeout|null = null
+  let message_queue = [];
+
   useEffect(() => {
-    const messages = gun.get("messages")
-    messages.map().once((m) => {
-      dispatch({
-        name: m?.name,
-        message: m?.message,
-        createdAt: m?.createdAt,
-        key: m?.key,
-      })
-    })
+    const messages = gun.get("messages");
+    messages.map().once(m => receiveMessage(m))
   }, [])
+
+  function receiveMessage(message) {
+    if (!message?.message || !message?.name) {
+      return
+    }
+    message_queue.push(message);
+    if (render_message_timeout !== null) {
+      return
+    }
+
+    // throttle render
+    const ms = Date.now();
+
+    let delay = Math.max(0, MESSAGE_THROTTLE_MS - (ms - last_message_timestamp));
+    last_message_timestamp = ms;
+
+    render_message_timeout = setTimeout(() => {
+      dispatch(message_queue);
+      render_message_timeout = null;
+    }, delay);
+  }
 
   const [formState, setFormState] = useState({
     name: "",
@@ -138,11 +159,6 @@ export const ChatScreen = observer(function ChatScreen() {
         >
           <View>
             {state?.messages
-              .filter((m) => {
-                if (m.message && m.name) {
-                  return m
-                }
-              })
               .map((message) => (
                 <Text key={message.key}>
                   {message.name} : {message.message}
