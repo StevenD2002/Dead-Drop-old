@@ -38,8 +38,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     margin: "auto",
     backgroundColor: color.palette.blue,
-    borderRadius: 10,
-    maxHeight: 40,
+    maxHeight: 50,
     padding: 10,
     width: 100,
   },
@@ -49,11 +48,15 @@ const styles = StyleSheet.create({
     margin: "auto",
   },
   inputRow: {
-    height: 40,
+    height: 50,
+    bottom: 15,
     flexDirection: "row",
+    borderColor: color.palette.blue,
+    borderWidth: 4,
+    zIndex: 1,
   },
   messageField: {
-    padding: 10,
+    height: 70,
     width: width - 100,
   },
 })
@@ -79,12 +82,6 @@ export const ChatScreen = observer(function ChatScreen() {
     message: "",
   })
 
-  function onChangeName(e) {
-    setFormState({
-      ...formState,
-      name: e,
-    })
-  }
   function onChangeMessage(e) {
     setFormState({
       ...formState,
@@ -116,26 +113,36 @@ export const ChatScreen = observer(function ChatScreen() {
           ref={scrollViewRef}
           onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
         >
-          {state.messages.map((message) => (
-            <Text key={message.key}>
-              {message.name}: {message.message}
-            </Text>
-          ))}
+          <View>
+            {state?.messages
+              ?.filter((f) => {
+                if (f.message && f.name) {
+                  return f
+                }
+              })
+              .map((message) => (
+                <Text key={message.key}>
+                  {message.name} : {message.message}
+                </Text>
+              ))}
+          </View>
         </ScrollView>
       </>
-
-      <View style={styles.inputRow}>
-        <TextInput
-          onChangeText={onChangeMessage}
-          placeholder={`Message`}
-          value={formState.message}
-          style={styles.messageField}
-          multiline={true}
-        />
-        <Pressable onPress={saveMessage} style={styles.button}>
-          <Text style={styles.buttonText}>Send</Text>
-        </Pressable>
-      </View>
+      <KeyboardAvoidingView>
+        <View style={styles.inputRow}>
+          <TextInput
+            onChangeText={onChangeMessage}
+            placeholder={`Message`}
+            value={formState.message}
+            style={styles.messageField}
+            multiline={true}
+          />
+          <Pressable onPress={saveMessage} style={styles.button}>
+            <Text style={styles.buttonText}>Send</Text>
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+      <View></View>
     </Screen>
   )
 })
