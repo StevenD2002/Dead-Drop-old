@@ -80,7 +80,7 @@ export const ChatScreen = observer(function ChatScreen() {
   }, [])
 
   function receiveMessage(message) {
-    if (message === null) {
+    if (!message?.message || !message?.name) {
       return
     }
     message_queue.push(message);
@@ -138,11 +138,6 @@ export const ChatScreen = observer(function ChatScreen() {
         >
           <View>
             {state?.messages
-              .filter((m) => {
-                if (m.message && m.name) {
-                  return m
-                }
-              })
               .map((message) => (
                 <Text key={message.key}>
                   {message.name} : {message.message}
