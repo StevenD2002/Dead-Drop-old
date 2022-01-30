@@ -1,16 +1,26 @@
-import React, { useEffect, useReducer, useState } from "react"
+import React, { useEffect, useReducer, useRef, useState } from "react"
 import { observer } from "mobx-react-lite"
-import { Button, Pressable, TextInput, View, ViewStyle, StyleSheet, Dimensions } from "react-native"
+import {
+  Button,
+  Pressable,
+  TextInput,
+  View,
+  ViewStyle,
+  StyleSheet,
+  Dimensions,
+  KeyboardAvoidingView,
+} from "react-native"
 import { Screen, Text } from "../../components"
 import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
+import { useStores } from "../../models"
 import { color } from "../../theme"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
 import { ScrollView } from "react-native-gesture-handler"
 import { navigate } from "../../navigators"
 
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 const ROOT: ViewStyle = {
   flex: 1,
 }
@@ -28,20 +38,27 @@ const width = Dimensions.get("window").width
 const styles = StyleSheet.create({
   button: {
     alignItems: "center",
+    margin: "auto",
     backgroundColor: color.palette.blue,
-    borderRadius: 10,
-    maxHeight: 40,
+    maxHeight: 50,
     padding: 10,
     width: 100,
   },
   buttonText: {
+    alignSelf: "center",
     color: color.palette.white,
+    margin: "auto",
   },
   inputRow: {
+    height: 50,
+    bottom: 15,
     flexDirection: "row",
+    borderColor: color.palette.blue,
+    borderWidth: 4,
+    zIndex: 1,
   },
   messageField: {
-    padding: 10,
+    height: 70,
     width: width - 100,
   },
 
@@ -53,14 +70,16 @@ const styles = StyleSheet.create({
     padding: 10,
     width: 100,
     position: "absolute",
-    zIndex: 3
-  }
+    zIndex: 3,
+  },
 })
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const { user } = useStores()
   const [state, dispatch] = useReducer(reducer, initialState)
   const { theme } = useTheme()
+  const name = useRef("")
+
   useEffect(() => {
     const messages = gun.get("messages")
     messages.map().once((m) => {
@@ -78,12 +97,6 @@ export const ChatScreen = observer(function ChatScreen() {
     message: "",
   })
 
-  function onChangeName(e) {
-    setFormState({
-      ...formState,
-      name: e,
-    })
-  }
   function onChangeMessage(e) {
     setFormState({
       ...formState,
@@ -91,7 +104,7 @@ export const ChatScreen = observer(function ChatScreen() {
     })
   }
 
-  const onPressHandler=()=>{
+  const onPressHandler = () => {
     navigate("settings")
   }
 
@@ -99,7 +112,7 @@ export const ChatScreen = observer(function ChatScreen() {
   function saveMessage() {
     const messages = gun.get("messages")
     messages.set({
-      name: formState.name,
+      name: user.username,
       message: formState.message,
       createdAt: timeStamp,
       key: uuid.v4(),
@@ -109,6 +122,7 @@ export const ChatScreen = observer(function ChatScreen() {
       message: "",
     })
   }
+  const scrollViewRef = useRef()
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
@@ -117,27 +131,41 @@ export const ChatScreen = observer(function ChatScreen() {
         <Text style={styles.buttonText}>Settings</Text>
       </Pressable>
       <>
-        <ScrollView>
-          {state.messages.map((message) => (
-            <Text key={message.key}>
-              {message.name}: {message.message}
-            </Text>
-          ))}
+        <ScrollView
+          keyboardDismissMode="on-drag"
+          ref={scrollViewRef}
+          onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+        >
+          <View>
+            {state?.messages
+              .filter((m) => {
+                if (m.message && m.name) {
+                  return m
+                }
+              })
+              .map((message) => (
+                <Text key={message.key}>
+                  {message.name} : {message.message}
+                </Text>
+              ))}
+          </View>
         </ScrollView>
       </>
-      <TextInput onChangeText={onChangeName} placeholder={`Name`} value={formState.name} />
-      <View style={styles.inputRow}>
-        <TextInput
-          onChangeText={onChangeMessage}
-          placeholder={`Message`}
-          value={formState.message}
-          style={styles.messageField}
-          multiline={true}
-        />
-        <Pressable onPress={saveMessage} style={styles.button}>
-          <Text style={styles.buttonText}>Send</Text>
-        </Pressable>
-      </View>
+      <KeyboardAvoidingView>
+        <View style={styles.inputRow}>
+          <TextInput
+            onChangeText={onChangeMessage}
+            placeholder={`Message`}
+            value={formState.message}
+            style={styles.messageField}
+            multiline={true}
+          />
+          <Pressable onPress={saveMessage} style={styles.button}>
+            <Text style={styles.buttonText}>Send</Text>
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+      <View></View>
     </Screen>
   )
 })

@@ -11,4 +11,5 @@ export const palette = {
   blue: "#0e52c7",
   lightBlue: "#147DBA",
   darkGrey: "#404040",
+  grey: "404040",
 }
