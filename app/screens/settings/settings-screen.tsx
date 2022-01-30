@@ -1,9 +1,9 @@
-import React from "react"
+import React, { useState } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, StyleSheet, TouchableOpacity, View, Image } from "react-native"
 import { Button, Screen, Text } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
-// import { useStores } from "../../models"
+import { useStores } from "../../models"
 import { color } from "../../theme"
 import { TextInput } from "react-native-gesture-handler"
 import { navigate } from "../../navigators"
@@ -13,11 +13,11 @@ const ROOT: ViewStyle = {
   flex: 1,
 }
 
-const handleNavigate =()=> {
+const handleNavigate = () => {
   navigate("chat")
 }
 
-const styles= StyleSheet.create({
+const styles = StyleSheet.create({
   header: {
     color: "#e6e6e6",
     fontSize: 40,
@@ -34,7 +34,7 @@ const styles= StyleSheet.create({
     marginBottom: 15,
     alignSelf: "center",
   },
-  
+
   inputField: {
     backgroundColor: "#e6e6e6",
     height: 40,
@@ -42,68 +42,102 @@ const styles= StyleSheet.create({
     alignSelf: "center",
   },
 
-  TouchableOpacity:{
-    paddingHorizontal:10,
-    paddingVertical:5,
-    borderRadius:5,
+  TouchableOpacity: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
     marginTop: 80,
     height: 50,
     width: 200,
     alignSelf: "center",
     borderWidth: 2,
-    borderColor:'white',
+    borderColor: "white",
     backgroundColor: "#0167b1",
   },
 
-  TouchableOpacityBackButton:{
-    paddingHorizontal:10,
-    paddingVertical:5,
-    borderRadius:5,
+  TouchableOpacityBackButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
     marginTop: 70,
     height: 50,
     width: 200,
     alignSelf: "center",
     borderWidth: 2,
-    borderColor:'white',
+    borderColor: "white",
     backgroundColor: "#0167b1",
-  }
+  },
 })
-
-const onPressHandler=()=>{
-  console.log('Button Pressed!')
-}
 
 export const SettingsScreen = observer(function SettingsScreen() {
   // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+  const { user } = useStores()
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
-const onChangeName = () => {
-  console.log("hello")
-}
-
+  const [formState, setformState] = useState({
+    name: "",
+  })
+  const onChangeName = (e) => {
+    setformState({
+      ...formState,
+      name: e,
+    })
+  }
+  const handleChangeName = () => {
+    user.login(formState.name)
+    navigate("chat")
+  }
   return (
     <Screen style={ROOT} preset="scroll">
       <Text preset="header" text="Settings" style={styles.header} />
 
       <Text text="Change Username" style={styles.title} />
       <TextInput onChangeText={onChangeName} style={styles.inputField} />
-     
-      <TouchableOpacity activeOpacity={0.5} style={styles.TouchableOpacity} onPress={onPressHandler}>
+
+      <TouchableOpacity
+        activeOpacity={0.5}
+        style={styles.TouchableOpacity}
+        onPress={handleChangeName}
+      >
         <View>
-          <Text style={{fontSize:25, color: color.palette.offWhite, alignSelf: "center", marginTop:5, fontWeight: "500", fontStyle: "normal"}}>Done!</Text>
+          <Text
+            style={{
+              fontSize: 25,
+              color: color.palette.offWhite,
+              alignSelf: "center",
+              marginTop: 5,
+              fontWeight: "500",
+              fontStyle: "normal",
+            }}
+          >
+            Done!
+          </Text>
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity activeOpacity={0.5} style={styles.TouchableOpacityBackButton} onPress={handleNavigate}>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        style={styles.TouchableOpacityBackButton}
+        onPress={handleNavigate}
+      >
         <View>
-          <Text style={{fontSize:25, color: color.palette.offWhite, alignSelf: "center", marginTop:5, fontWeight: "500", fontStyle: "normal"}}>Back</Text>
+          <Text
+            style={{
+              fontSize: 25,
+              color: color.palette.offWhite,
+              alignSelf: "center",
+              marginTop: 5,
+              fontWeight: "500",
+              fontStyle: "normal",
+            }}
+          >
+            Back
+          </Text>
         </View>
       </TouchableOpacity>
 
       <Image source={require("../../../assets/images/DeadDropTransparent2.png")} />
-
     </Screen>
   )
 })

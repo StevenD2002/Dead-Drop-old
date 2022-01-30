@@ -19,13 +19,16 @@ import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
 import { ScrollView } from "react-native-gesture-handler"
 import { navigate } from "../../navigators"
-
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
+import { faCog } from "@fortawesome/free-solid-svg-icons"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import { SafeAreaView } from "react-native-safe-area-context"
 const ROOT: ViewStyle = {
   flex: 1,
+  backgroundColor: "#404040",
 }
 
-const MESSAGE_THROTTLE_MS = 250;
+const MESSAGE_THROTTLE_MS = 250
 
 const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
 const initialState = {
@@ -39,6 +42,10 @@ function reducer(state, messages) {
 }
 const width = Dimensions.get("window").width
 const styles = StyleSheet.create({
+  bottom: {
+    backgroundColor: color.palette.blue,
+    padding: 15,
+  },
   button: {
     alignItems: "center",
     margin: "auto",
@@ -61,19 +68,29 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   messageField: {
-    height: 70,
+    backgroundColor: color.palette.white,
+    height: 40,
     width: width - 100,
   },
-
+  messageGroup: {
+    marginBottom: 10,
+    padding: 10,
+  },
   settingsButton: {
     backgroundColor: color.palette.blue,
     alignItems: "center",
-    borderRadius: 10,
-    maxHeight: 40,
+    borderRadius: 100,
+    right: 10,
     padding: 10,
-    width: 100,
     position: "absolute",
     zIndex: 3,
+  },
+  textMessage: {
+    color: color.palette.white,
+  },
+  textName: {
+    fontWeight: "bold",
+    color: color.palette.white,
   },
 })
 export const ChatScreen = observer(function ChatScreen() {
@@ -84,33 +101,33 @@ export const ChatScreen = observer(function ChatScreen() {
   const name = useRef("")
 
   let last_message_timestamp: number = 0
-  let render_message_timeout: NodeJS.Timeout|null = null
-  let message_queue = [];
+  let render_message_timeout: NodeJS.Timeout | null = null
+  let message_queue = []
 
   useEffect(() => {
-    const messages = gun.get("messages");
-    messages.map().once(m => receiveMessage(m))
+    const messages = gun.get("messages")
+    messages.map().once((m) => receiveMessage(m))
   }, [])
 
   function receiveMessage(message) {
     if (!message?.message || !message?.name) {
       return
     }
-    message_queue.push(message);
+    message_queue.push(message)
     if (render_message_timeout !== null) {
       return
     }
 
     // throttle render
-    const ms = Date.now();
+    const ms = Date.now()
 
-    let delay = Math.max(0, MESSAGE_THROTTLE_MS - (ms - last_message_timestamp));
-    last_message_timestamp = ms;
+    let delay = Math.max(0, MESSAGE_THROTTLE_MS - (ms - last_message_timestamp))
+    last_message_timestamp = ms
 
     render_message_timeout = setTimeout(() => {
-      dispatch(message_queue);
-      render_message_timeout = null;
-    }, delay);
+      dispatch(message_queue)
+      render_message_timeout = null
+    }, delay)
   }
 
   const [formState, setFormState] = useState({
@@ -133,9 +150,9 @@ export const ChatScreen = observer(function ChatScreen() {
 
   const timeStamp = new Date().toISOString()
   function saveMessage() {
-    let message = formState.message.trim();
+    let message = formState.message.trim()
     if (message.length == 0) {
-      return;
+      return
     }
     const messages = gun.get("messages")
     console.log(formState.message)
@@ -162,44 +179,45 @@ export const ChatScreen = observer(function ChatScreen() {
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
-    <Screen style={ROOT} preset="scroll">
-      <Pressable onPress={onPressHandler} style={styles.settingsButton}>
-        <Text style={styles.buttonText}>Settings</Text>
-      </Pressable>
-      <>
-        <ScrollView
-          keyboardDismissMode="interactive"
-          ref={scrollViewRef}
-          onContentSizeChange={() => scrollToEnd(scrollViewRef)}
-          onScroll={() => setShouldScrollDown(false)}
-          scrollEventThrottle={100}
-        >
-          <View>
-            {state?.messages
-              .map((message) => (
-                <Text key={message.key}>
-                  {message.name} : {message.message}
-                </Text>
+    <>
+      <Screen style={ROOT} preset="scroll">
+        <Pressable onPress={onPressHandler} style={styles.settingsButton}>
+          <FontAwesomeIcon icon={faCog} size={20} color={color.palette.white} />
+        </Pressable>
+        <>
+          <ScrollView
+            ref={scrollViewRef}
+            onContentSizeChange={() => scrollToEnd(scrollViewRef)}
+            onScroll={() => setShouldScrollDown(false)}
+            scrollEventThrottle={100}
+          >
+            <View>
+              {state?.messages.map((message) => (
+                <View key={message.key} style={styles.messageGroup}>
+                  <Text style={styles.textName}>{message.name}: </Text>
+                  <Text style={styles.textMessage}>{message.message}</Text>
+                </View>
               ))}
+            </View>
+          </ScrollView>
+        </>
+        <KeyboardAvoidingView>
+          <View style={styles.bottom}>
+            <View style={styles.inputRow}>
+              <TextInput
+                onChangeText={onChangeMessage}
+                placeholder={`Message`}
+                value={formState.message}
+                style={styles.messageField}
+                multiline={true}
+              />
+              <Pressable onPress={saveMessage} style={styles.button}>
+                <Text style={styles.buttonText}>Send</Text>
+              </Pressable>
+            </View>
           </View>
-        </ScrollView>
-      </>
-
-      <KeyboardAvoidingView>
-        <View style={styles.inputRow}>
-          <TextInput
-            onChangeText={onChangeMessage}
-            placeholder={`Message`}
-            value={formState.message}
-            style={styles.messageField}
-            multiline={true}
-          />
-          <Pressable onPress={saveMessage} style={styles.button}>
-            <Text style={styles.buttonText}>Send</Text>
-          </Pressable>
-        </View>
-      </KeyboardAvoidingView>
-      <View></View>
-    </Screen>
+        </KeyboardAvoidingView>
+      </Screen>
+    </>
   )
 })
