@@ -21,6 +21,7 @@ import { ScrollView } from "react-native-gesture-handler"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 const ROOT: ViewStyle = {
   flex: 1,
+  backgroundColor: "#404040",
 }
 const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
 const initialState = {
@@ -34,6 +35,10 @@ function reducer(state, message) {
 }
 const width = Dimensions.get("window").width
 const styles = StyleSheet.create({
+  bottom: {
+    backgroundColor: color.palette.blue,
+    padding: 15,
+  },
   button: {
     alignItems: "center",
     margin: "auto",
@@ -56,8 +61,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   messageField: {
-    height: 70,
+    backgroundColor: color.palette.white,
+    height: 40,
     width: width - 100,
+  },
+  text: {
+    color: color.palette.white,
   },
 })
 export const ChatScreen = observer(function ChatScreen() {
@@ -123,7 +132,7 @@ export const ChatScreen = observer(function ChatScreen() {
                 }
               })
               .map((message) => (
-                <Text key={message.key}>
+                <Text key={message.key} style={styles.text}>
                   {message.name} : {message.message}
                 </Text>
               ))}
@@ -131,20 +140,21 @@ export const ChatScreen = observer(function ChatScreen() {
         </ScrollView>
       </>
       <KeyboardAvoidingView>
-        <View style={styles.inputRow}>
-          <TextInput
-            onChangeText={onChangeMessage}
-            placeholder={`Message`}
-            value={formState.message}
-            style={styles.messageField}
-            multiline={true}
-          />
-          <Pressable onPress={saveMessage} style={styles.button}>
-            <Text style={styles.buttonText}>Send</Text>
-          </Pressable>
+        <View style={styles.bottom}>
+          <View style={styles.inputRow}>
+            <TextInput
+              onChangeText={onChangeMessage}
+              placeholder={`Message`}
+              value={formState.message}
+              style={styles.messageField}
+              multiline={true}
+            />
+            <Pressable onPress={saveMessage} style={styles.button}>
+              <Text style={styles.buttonText}>Send</Text>
+            </Pressable>
+          </View>
         </View>
       </KeyboardAvoidingView>
-      <View></View>
     </Screen>
   )
 })
