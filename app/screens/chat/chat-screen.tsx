@@ -22,6 +22,7 @@ import { navigate } from "../../navigators"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faCog } from "@fortawesome/free-solid-svg-icons"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
+import { SafeAreaView } from "react-native-safe-area-context"
 const ROOT: ViewStyle = {
   flex: 1,
   backgroundColor: "#404040",
@@ -162,42 +163,44 @@ export const ChatScreen = observer(function ChatScreen() {
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
-    <Screen style={ROOT} preset="scroll">
-      <Pressable onPress={onPressHandler} style={styles.settingsButton}>
-        <FontAwesomeIcon icon={faCog} size={20} color={color.palette.white} />
-      </Pressable>
-      <>
-        <ScrollView
-          keyboardDismissMode="on-drag"
-          ref={scrollViewRef}
-          onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-        >
-          <View>
-            {state?.messages.map((message) => (
-              <View key={message.key} style={styles.messageGroup}>
-                <Text style={styles.textName}>{message.name}: </Text>
-                <Text style={styles.textMessage}>{message.message}</Text>
-              </View>
-            ))}
+    <>
+      <Screen style={ROOT} preset="scroll">
+        <Pressable onPress={onPressHandler} style={styles.settingsButton}>
+          <FontAwesomeIcon icon={faCog} size={20} color={color.palette.white} />
+        </Pressable>
+        <>
+          <ScrollView
+            keyboardDismissMode="on-drag"
+            ref={scrollViewRef}
+            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+          >
+            <View>
+              {state?.messages.map((message) => (
+                <View key={message.key} style={styles.messageGroup}>
+                  <Text style={styles.textName}>{message.name}: </Text>
+                  <Text style={styles.textMessage}>{message.message}</Text>
+                </View>
+              ))}
+            </View>
+          </ScrollView>
+        </>
+        <KeyboardAvoidingView>
+          <View style={styles.bottom}>
+            <View style={styles.inputRow}>
+              <TextInput
+                onChangeText={onChangeMessage}
+                placeholder={`Message`}
+                value={formState.message}
+                style={styles.messageField}
+                multiline={true}
+              />
+              <Pressable onPress={saveMessage} style={styles.button}>
+                <Text style={styles.buttonText}>Send</Text>
+              </Pressable>
+            </View>
           </View>
-        </ScrollView>
-      </>
-      <KeyboardAvoidingView>
-        <View style={styles.bottom}>
-          <View style={styles.inputRow}>
-            <TextInput
-              onChangeText={onChangeMessage}
-              placeholder={`Message`}
-              value={formState.message}
-              style={styles.messageField}
-              multiline={true}
-            />
-            <Pressable onPress={saveMessage} style={styles.button}>
-              <Text style={styles.buttonText}>Send</Text>
-            </Pressable>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
-    </Screen>
+        </KeyboardAvoidingView>
+      </Screen>
+    </>
   )
 })
