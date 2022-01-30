@@ -111,7 +111,6 @@ export const ChatScreen = observer(function ChatScreen() {
     if (shouldScrollDown == true) {
       ref.current.scrollToEnd({ animated: true })
     }
-    
   }
 
   // Pull in navigation via hook
@@ -143,7 +142,6 @@ export const ChatScreen = observer(function ChatScreen() {
       </>
 
       <KeyboardAvoidingView>
-        <Text>Logged in as {user.username}</Text>
         <View style={styles.inputRow}>
           <TextInput
             onChangeText={onChangeMessage}
