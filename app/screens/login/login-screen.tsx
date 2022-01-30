@@ -59,7 +59,9 @@ export const LoginScreen = observer(function LoginScreen() {
 
   function login(event) {
     let username = formState.username
-    user.login(username)
+    if (!user.setUsername(username)) {
+      return false;
+    }
 
     navigate("chat")
 

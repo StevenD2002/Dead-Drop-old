@@ -92,8 +92,9 @@ export const SettingsScreen = observer(function SettingsScreen() {
     })
   }
   const handleChangeName = () => {
-    user.login(formState.name)
-    navigate("chat")
+    if (user.setUsername(formState.name)) {
+      navigate("chat")
+    }
   }
   return (
     <Screen style={ROOT} preset="scroll">
