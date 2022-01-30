@@ -131,6 +131,10 @@ export const ChatScreen = observer(function ChatScreen() {
 
   const timeStamp = new Date().toISOString()
   function saveMessage() {
+    let message = formState.message.trim();
+    if (message.length == 0) {
+      return;
+    }
     const messages = gun.get("messages")
     messages.set({
       name: user.username,
