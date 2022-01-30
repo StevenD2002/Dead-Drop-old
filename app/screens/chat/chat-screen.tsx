@@ -164,7 +164,7 @@ export const ChatScreen = observer(function ChatScreen() {
     if (message.length == 0) {
       return
     }
-    const messages = gun.get("messages")
+    const messages = gun.get(GUN_MESSAGES_DB_KEY)
     console.log(formState.message)
     messages.set({
       name: user.username,
