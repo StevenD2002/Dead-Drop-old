@@ -15,6 +15,7 @@ import Gun from "gun"
 // import { useNavigation } from "@react-navigation/native"
 import { useStores } from "../../models"
 import { color } from "../../theme"
+import { formatDate } from "../../utils/formatting"
 import uuid from "react-native-uuid"
 import { useTheme } from "@react-navigation/native"
 import { ScrollView } from "react-native-gesture-handler"
@@ -84,6 +85,14 @@ const styles = StyleSheet.create({
     padding: 10,
     position: "absolute",
     zIndex: 3,
+  },
+  textDate: {
+    color: color.palette.white,
+    opacity: 0.8,
+  },
+  textHeader: {
+    display: "flex",
+    flexDirection: "row"
   },
   textMessage: {
     color: color.palette.white,
@@ -194,7 +203,10 @@ export const ChatScreen = observer(function ChatScreen() {
             <View>
               {state?.messages.map((message) => (
                 <View key={message.key} style={styles.messageGroup}>
-                  <Text style={styles.textName}>{message.name}: </Text>
+                  <View style={styles.textHeader}>
+                    <Text style={styles.textName}>{message.name}: </Text>
+                    <Text style={styles.textDate}>{formatDate(message.createdAt)}</Text>
+                  </View>
                   <Text style={styles.textMessage}>{message.message}</Text>
                 </View>
               ))}

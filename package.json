@@ -40,6 +40,7 @@
     "@react-navigation/native-stack": "^6.0.2",
     "@react-navigation/stack": "~6.0.1",
     "apisauce": "2.0.0",
+    "dateformat": "^5.0.2",
     "expo": "43.0.0",
     "expo-linear-gradient": "^10.0.3",
     "expo-localization": "11.0.0",
