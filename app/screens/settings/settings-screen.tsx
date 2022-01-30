@@ -67,6 +67,13 @@ const styles = StyleSheet.create({
     borderColor: "white",
     backgroundColor: "#0167b1",
   },
+  logo: {
+    height: 250,
+    width: 300,
+    margin: "auto",
+    resizeMode: "stretch",
+    alignSelf: "center",
+  },
 })
 
 export const SettingsScreen = observer(function SettingsScreen() {
@@ -138,7 +145,10 @@ export const SettingsScreen = observer(function SettingsScreen() {
         </View>
       </TouchableOpacity>
 
-      <Image source={require("../../../assets/images/DeadDropTransparent2.png")} />
+      <Image
+        source={require("../../../assets/images/DeadDropTransparent.png")}
+        style={styles.logo}
+      />
     </Screen>
   )
 })

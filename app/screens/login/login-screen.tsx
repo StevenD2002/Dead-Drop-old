@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle, StyleSheet, Pressable } from "react-native"
+import { ViewStyle, StyleSheet, Pressable, Image } from "react-native"
 import { Button, Screen, Text, TextField } from "../../components"
 // import { useNavigation } from "@react-navigation/native"
 import { navigate } from "../../navigators"
@@ -16,14 +16,14 @@ const ROOT: ViewStyle = {
 const styles = StyleSheet.create({
   loginForm: {
     backgroundColor: color.palette.black,
-    color:color.palette.lightGrey,
+    color: color.palette.lightGrey,
     margin: 20,
     fontSize: 50,
-    width: "100%"
+    width: "100%",
   },
   font: {
     fontSize: 25,
-    color: color.palette.white
+    color: color.palette.white,
   },
   button: {
     alignItems: "center",
@@ -33,12 +33,17 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingLeft: 10,
     width: 100,
-    borderRadius:10,
+    borderRadius: 10,
   },
   center: {
     alignItems: "center",
     backgroundColor: color.palette.grey,
-    height: "100%"
+    height: "100%",
+  },
+  image: {
+    width: 300,
+    height: 250,
+    resizeMode: "stretch",
   },
 })
 
@@ -79,7 +84,13 @@ export const LoginScreen = observer(function LoginScreen() {
           value={formState.username}
           style={styles.loginForm}
         />
-        <Pressable onPress={login} style={styles.button}><Text style={styles.font}>log in</Text></Pressable>
+        <Pressable onPress={login} style={styles.button}>
+          <Text style={styles.font}>log in</Text>
+        </Pressable>
+        <Image
+          source={require("../../../assets/images/DeadDropTransparent.png")}
+          style={styles.image}
+        />
       </SafeAreaView>
     </Screen>
   )
