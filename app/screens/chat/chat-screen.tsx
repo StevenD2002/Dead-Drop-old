@@ -29,7 +29,7 @@ const ROOT: ViewStyle = {
   backgroundColor: "#404040",
 }
 
-const GUN_MESSAGES_DB_KEY = "messages"
+const GUN_MESSAGES_DB_KEY = "messages-demo"
 const MESSAGE_THROTTLE_MS = 250
 
 const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   textMessage: {
     color: color.palette.white,

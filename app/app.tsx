@@ -19,8 +19,10 @@ import { AppNavigator, useNavigationPersistence } from "./navigators"
 import { RootStore, RootStoreProvider, setupRootStore } from "./models"
 import { ToggleStorybook } from "../storybook/toggle-storybook"
 import { ErrorBoundary } from "./screens/error/error-boundary"
-import { StyleSheet, View } from "react-native"
+import { StyleSheet, View, LogBox } from "react-native"
 
+LogBox.ignoreLogs(["Warning: ..."]) // Ignore log notification by message
+LogBox.ignoreAllLogs()
 // This puts screens in a native ViewController or Activity. If you want fully native
 // stack navigation, use `createNativeStackNavigator` in place of `createStackNavigator`:
 // https://github.com/kmagiera/react-native-screens#using-native-stack-navigator
