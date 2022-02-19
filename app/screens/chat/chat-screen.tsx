@@ -22,8 +22,7 @@ import { ScrollView } from "react-native-gesture-handler"
 import { navigate } from "../../navigators"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
 import { faCog } from "@fortawesome/free-solid-svg-icons"
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
-import { SafeAreaView } from "react-native-safe-area-context"
+
 const ROOT: ViewStyle = {
   flex: 1,
   backgroundColor: "#404040",
@@ -35,6 +34,12 @@ const MESSAGE_THROTTLE_MS = 250
 const gun = Gun({
   peers: ["https://deaddropchat.herokuapp.com/gun"],
 })
+
+var SEA = Gun.SEA
+;async () => {
+  let pair = await SEA.pair()
+}
+
 const initialState = {
   messages: [],
 }
@@ -204,15 +209,17 @@ export const ChatScreen = observer(function ChatScreen() {
             scrollEventThrottle={100}
           >
             <View>
-              {state?.messages.map((message) => (
-                <View key={message.key} style={styles.messageGroup}>
-                  <View style={styles.textHeader}>
-                    <Text style={styles.textName}>{message.name}: </Text>
-                    <Text style={styles.textDate}>{formatDate(message.createdAt)}</Text>
+              {state?.messages
+                .sort((m1, m2) => m1.createdAt - m2.createdAt)
+                .map((message) => (
+                  <View key={message.key} style={styles.messageGroup}>
+                    <View style={styles.textHeader}>
+                      <Text style={styles.textName}>{message.name}: </Text>
+                      <Text style={styles.textDate}>{formatDate(message.createdAt)}</Text>
+                    </View>
+                    <Text style={styles.textMessage}>{message.message}</Text>
                   </View>
-                  <Text style={styles.textMessage}>{message.message}</Text>
-                </View>
-              ))}
+                ))}
             </View>
           </ScrollView>
         </>
