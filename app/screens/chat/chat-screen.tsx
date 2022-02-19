@@ -32,7 +32,9 @@ const ROOT: ViewStyle = {
 const GUN_MESSAGES_DB_KEY = "messages"
 const MESSAGE_THROTTLE_MS = 250
 
-const gun = Gun({ peers: ["http://drop.amii.moe:8765/gun"] })
+const gun = Gun({
+  peers: ["https://deaddropchat.herokuapp.com/gun"],
+})
 const initialState = {
   messages: [],
 }
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
   },
   textMessage: {
     color: color.palette.white,
@@ -190,7 +192,7 @@ export const ChatScreen = observer(function ChatScreen() {
   // const navigation = useNavigation()
   return (
     <>
-      <Screen style={ROOT} preset="scroll">
+      <Screen style={ROOT} preset="scroll" unsafe={false}>
         <Pressable onPress={onPressHandler} style={styles.settingsButton}>
           <FontAwesomeIcon icon={faCog} size={20} color={color.palette.white} />
         </Pressable>

@@ -23,7 +23,7 @@ export const color = {
   /**
    * The screen background.
    */
-  background: palette.white,
+  background: palette.darkGrey,
   /**
    * The main tinting color.
    */
