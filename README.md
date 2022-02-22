@@ -1,3 +1,4 @@
+Dead Drop : "a prearranged hiding place for the deposit and pickup of information obtained through espionage."
 Welcome to Dead Drop!
 
 This is a WIP decentralized chat application aimed for mobile.
