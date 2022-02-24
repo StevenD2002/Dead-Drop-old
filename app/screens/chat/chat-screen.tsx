@@ -32,7 +32,7 @@ const GUN_MESSAGES_DB_KEY = "messages"
 const MESSAGE_THROTTLE_MS = 250
 
 const gun = Gun({
-  peers: ["https://deaddropchat.herokuapp.com/gun"],
+  peers: ["http://deaddropchat.herokuapp.com/gun", "http://drop.amii.moe:8765/gun"],
 })
 
 var SEA = Gun.SEA
