@@ -21,7 +21,7 @@ import { useTheme } from "@react-navigation/native"
 import { ScrollView } from "react-native-gesture-handler"
 import { navigate } from "../../navigators"
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"
-import { faCog } from "@fortawesome/free-solid-svg-icons"
+import { faCog, faPaperPlane } from "@fortawesome/free-solid-svg-icons"
 
 const ROOT: ViewStyle = {
   flex: 1,
@@ -32,7 +32,7 @@ const GUN_MESSAGES_DB_KEY = "messages"
 const MESSAGE_THROTTLE_MS = 250
 
 const gun = Gun({
-  peers: ["http://deaddropchat.herokuapp.com/gun", "http://drop.amii.moe:8765/gun"],
+  peers: ["http://deaddropchat.herokuapp.com/gun"],
 })
 
 var SEA = Gun.SEA
@@ -53,32 +53,27 @@ const width = Dimensions.get("window").width
 const styles = StyleSheet.create({
   bottom: {
     backgroundColor: color.palette.blue,
+    flexDirection: "row",
     padding: 15,
   },
   button: {
     alignItems: "center",
-    margin: "auto",
     backgroundColor: color.palette.blue,
-    maxHeight: 50,
-    padding: 10,
-    width: 100,
-  },
-  buttonText: {
-    alignSelf: "center",
-    color: color.palette.white,
-    margin: "auto",
   },
   inputRow: {
-    height: 50,
     bottom: 15,
     flexDirection: "row",
-    borderColor: color.palette.blue,
-    borderWidth: 4,
+    height: 40,
     zIndex: 1,
+    marginTop: 10,
   },
   messageField: {
     backgroundColor: color.palette.white,
-    height: 40,
+    borderRadius: 10,
+    fontSize: 20,
+    maxHeight: 90,
+    alignContent: "center",
+    paddingVertical: 26,
     width: width - 100,
   },
   messageGroup: {
@@ -86,12 +81,12 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   settingsButton: {
-    backgroundColor: color.palette.blue,
     alignItems: "center",
+    backgroundColor: color.palette.blue,
     borderRadius: 100,
-    right: 10,
     padding: 10,
     position: "absolute",
+    right: 10,
     zIndex: 3,
   },
   textDate: {
@@ -106,12 +101,13 @@ const styles = StyleSheet.create({
     color: color.palette.white,
   },
   textName: {
-    fontWeight: "bold",
     color: color.palette.white,
+    fontWeight: "bold",
   },
 })
 export const ChatScreen = observer(function ChatScreen() {
   // Pull in one of our MST stores
+  const [fieldHeight, setFieldHeight] = useState(50)
   const { user } = useStores()
   const [state, dispatch] = useReducer(reducer, initialState)
   const { theme } = useTheme()
@@ -172,7 +168,6 @@ export const ChatScreen = observer(function ChatScreen() {
       return
     }
     const messages = gun.get("messages")
-    console.log(formState.message)
     messages.set({
       name: user.username,
       message: formState.message,
@@ -227,14 +222,19 @@ export const ChatScreen = observer(function ChatScreen() {
           <View style={styles.bottom}>
             <View style={styles.inputRow}>
               <TextInput
-                onChangeText={onChangeMessage}
+                onChangeText={(e) => {
+                  onChangeMessage(e)
+                }}
+                onContentSizeChange={(e) => {
+                  setFieldHeight(e.nativeEvent.contentSize.height)
+                }}
                 placeholder={`Message`}
                 value={formState.message}
-                style={styles.messageField}
+                style={[styles.messageField, { height: fieldHeight }]}
                 multiline={true}
               />
               <Pressable onPress={saveMessage} style={styles.button}>
-                <Text style={styles.buttonText}>Send</Text>
+                <FontAwesomeIcon icon={faPaperPlane} size={20} color={color.palette.white} />
               </Pressable>
             </View>
           </View>
