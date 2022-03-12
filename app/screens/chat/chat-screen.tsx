@@ -27,7 +27,15 @@ const ROOT: ViewStyle = {
   flex: 1,
   backgroundColor: "#404040",
 }
-
+const SETTINGSBUTTON: ViewStyle = {
+  alignItems: "center",
+  backgroundColor: color.palette.blue,
+  borderRadius: 100,
+  padding: 10,
+  position: "absolute",
+  right: 10,
+  zIndex: 3,
+}
 const GUN_MESSAGES_DB_KEY = "messages"
 const MESSAGE_THROTTLE_MS = 250
 
@@ -57,38 +65,32 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   button: {
-    alignItems: "center",
     backgroundColor: color.palette.blue,
+    marginLeft: 30,
+    paddingVertical: 5,
   },
   inputRow: {
-    bottom: 15,
+    bottom: 20,
     flexDirection: "row",
     height: 40,
     marginTop: 10,
-    zIndex: 1,
   },
   messageField: {
     alignContent: "center",
     backgroundColor: color.palette.white,
+    lineHeight: 30,
     borderRadius: 10,
-    fontSize: 20,
+    fontSize: 24,
+    paddingBottom: 10,
+    paddingHorizontal: 10,
     maxHeight: 90,
-    paddingVertical: 26,
     width: width - 100,
   },
   messageGroup: {
     marginBottom: 10,
     padding: 10,
   },
-  settingsButton: {
-    alignItems: "center",
-    backgroundColor: color.palette.blue,
-    borderRadius: 100,
-    padding: 10,
-    position: "absolute",
-    right: 10,
-    zIndex: 3,
-  },
+
   textDate: {
     color: color.palette.white,
     opacity: 0.8,
@@ -192,8 +194,8 @@ export const ChatScreen = observer(function ChatScreen() {
   // const navigation = useNavigation()
   return (
     <>
-      <Screen style={ROOT} preset="scroll" unsafe={false}>
-        <Pressable onPress={onPressHandler} style={styles.settingsButton}>
+      <Screen style={ROOT} preset="fixed" unsafe={false}>
+        <Pressable onPress={onPressHandler} style={SETTINGSBUTTON}>
           <FontAwesomeIcon icon={faCog} size={20} color={color.palette.white} />
         </Pressable>
         <>
@@ -234,7 +236,7 @@ export const ChatScreen = observer(function ChatScreen() {
                 multiline={true}
               />
               <Pressable onPress={saveMessage} style={styles.button}>
-                <FontAwesomeIcon icon={faPaperPlane} size={20} color={color.palette.white} />
+                <FontAwesomeIcon icon={faPaperPlane} size={24} color={color.palette.white} />
               </Pressable>
             </View>
           </View>
