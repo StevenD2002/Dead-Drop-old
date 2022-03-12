@@ -9,7 +9,7 @@
     "icon": "./assets/images/icon.png",
     "owner": "natelier",
     "splash": {
-      "image": "./assets/images/DeadDropGlitch.png",
+      "image": "./assets/images/DeadDropLogo.svg",
       "resizeMode": "contain",
       "backgroundColor": "#404040"
     },
@@ -19,7 +19,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "sh.natalie.dead-drop"
+      "bundleIdentifier": "dead-drop"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
