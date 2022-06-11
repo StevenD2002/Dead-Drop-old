@@ -7,7 +7,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "owner": "natelier",
+    "owner": "steven",
     "splash": {
       "image": "./assets/images/DeadDropGlitch.png",
       "resizeMode": "contain",
@@ -19,7 +19,7 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "sh.natalie.dead-drop"
+      "bundleIdentifier": "sh.think-do.dead-drop"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
