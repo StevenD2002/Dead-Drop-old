@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export const LoginScreen = observer(function LoginScreen() {
+export const CreateAccountScreen = observer(function LoginScreen() {
   // Pull in one of our MST stores
   const { user } = useStores()
 
@@ -55,18 +55,14 @@ export const LoginScreen = observer(function LoginScreen() {
   // const navigation = useNavigation()
   const [formState, setFormState] = useState({
     username: "",
+    password: "",
   })
 
   function login(event) {
     let username = formState.username
-    if (!user.setUsername(username)) {
-      return false;
-    }
+    let password = formState.password
 
     navigate("chat")
-
-    event.preventDefault()
-    return false
   }
 
   function changeUsername(value) {
@@ -86,8 +82,15 @@ export const LoginScreen = observer(function LoginScreen() {
           placeholder="Username..."
           placeholderTextColor="rgba(255, 255, 255, 0.8)"
         />
-        <Pressable onPress={login} style={styles.button}>
-          <Text style={styles.font}>log in</Text>
+        <TextInput
+          onChangeText={changePassword}
+          value={formState.password}
+          style={styles.loginForm}
+          placeholder="Password..."
+          placeholderTextColor="rgba(255, 255, 255, 0.8)"
+        />
+        <Pressable onPress={createAccount} style={styles.button}>
+          <Text style={styles.font}>create account</Text>
         </Pressable>
         <Image
           source={require("../../../assets/images/DeadDropTransparent.png")}
