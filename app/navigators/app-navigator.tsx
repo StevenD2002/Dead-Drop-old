@@ -8,7 +8,7 @@ import React from "react"
 import { useColorScheme } from "react-native"
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { ChatScreen, SettingsScreen, LoginScreen } from "../screens"
+import { ChatScreen, SettingsScreen, CreateAccountScreen } from "../screens"
 import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
 
 /**
@@ -24,9 +24,9 @@ import { navigationRef, useBackButtonHandler } from "./navigation-utilities"
  *   https://reactnavigation.org/docs/typescript#type-checking-the-navigator
  */
 export type NavigatorParamList = {
+  createAccount: undefined
   chat: undefined
   settings: undefined
-  login: undefined
 }
 
 // Documentation: https://reactnavigation.org/docs/stack-navigator/
@@ -38,11 +38,11 @@ const AppStack = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="login"
+      initialRouteName="createAccount"
     >
       {/* <Stack.Screen name="settings" component={SettingsScreen} /> */}
       {/* <Stack.Screen name="chat" component={ChatScreen} /> */}
-      <Stack.Screen name="login" component={LoginScreen} />
+      <Stack.Screen name="createAccount" component={CreateAccountScreen} />
     </Stack.Navigator>
   )
 }

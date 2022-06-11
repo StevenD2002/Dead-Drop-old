@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export const LoginScreen = observer(function LoginScreen() {
+export const CreateAccountScreen = observer(function LoginScreen() {
   // Pull in one of our MST stores
   const { user } = useStores()
 

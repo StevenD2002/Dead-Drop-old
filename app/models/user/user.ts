@@ -3,7 +3,6 @@ import Gun from "gun"
 
 const gun = new Gun()
 const user = gun.user()
-
 /**
  * Model description here for TypeScript hints.
  */
@@ -11,11 +10,11 @@ export const UserModel = types
   .model("User")
   .props({
     username: types.maybeNull(types.string),
+    authenticated: types.maybeNull(types.boolean),
   })
   .views((self) => ({
-    isLoggedIn() {
-      return self.username !== null
-    },
+    get isAuthenticated() {
+      return user.is
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
     login,
