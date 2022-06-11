@@ -1,4 +1,8 @@
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
+import Gun from "gun"
+
+const gun = new Gun()
+const user = gun.user()
 
 /**
  * Model description here for TypeScript hints.
@@ -6,24 +10,15 @@ import { Instance, SnapshotOut, types } from "mobx-state-tree"
 export const UserModel = types
   .model("User")
   .props({
-    username: types.maybeNull(types.string)
+    username: types.maybeNull(types.string),
   })
   .views((self) => ({
     isLoggedIn() {
       return self.username !== null
-    }
+    },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
-    setUsername(username: string) {
-      if (username.length == 0) {
-        return false;
-      }
-      self.username = username
-      return true;
-    },
-    forget() {
-      self.username = null
-    }
+    login,
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
 
 type UserType = Instance<typeof UserModel>
